@@ -4,47 +4,37 @@ pipeline {
     environment {
         IMAGE_NAME = "todo-django-app"
         CONTAINER_NAME = "todo_app"
+        APP_PORT = "8081"
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'git@github.com:nehanayak07/todo-cicd.git'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}:latest")
-                }
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                script {
-                    sh "docker rm -f ${CONTAINER_NAME} || true"
-                }
+                sh 'docker rm -f $CONTAINER_NAME || true'
             }
         }
 
-        stage('Run Docker') {
+        stage('Deploy New Container') {
             steps {
-                script {
-                    sh "docker run -d -p 8081:8000 --name ${CONTAINER_NAME} ${IMAGE_NAME}:latest"
-                }
+                sh 'docker run -d -p $APP_PORT:8000 --name $CONTAINER_NAME $IMAGE_NAME'
             }
         }
     }
 
     post {
         success {
-            echo "🎉 Deployment succeeded."
+            echo "✅ Deployment successful"
         }
         failure {
-            echo "❌ Deployment failed."
+            echo "❌ Deployment failed"
         }
     }
 }
+
