@@ -9,21 +9,27 @@ pipeline {
 
     stages {
 
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                sh 'docker rm -f $CONTAINER_NAME || true'
+                sh "docker rm -f ${CONTAINER_NAME} || true"
             }
         }
 
         stage('Deploy New Container') {
             steps {
-                sh 'docker run -d -p $APP_PORT:8000 --name $CONTAINER_NAME $IMAGE_NAME'
+                sh "docker run -d -p ${APP_PORT}:8000 --name ${CONTAINER_NAME} ${IMAGE_NAME}"
             }
         }
     }
