@@ -9,9 +9,16 @@ pipeline {
 
     stages {
 
-        stage('Checkout SCM') {
+        stage('Clean Workspace') {
             steps {
-                checkout scm
+                deleteDir()
+            }
+        }
+
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/nehanayak07/todo-cicd.git'
             }
         }
 
@@ -43,4 +50,3 @@ pipeline {
         }
     }
 }
-
