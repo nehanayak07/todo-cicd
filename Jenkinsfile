@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         IMAGE_NAME = "todo-django-app"
         CONTAINER_NAME = "todo_app"
@@ -15,7 +19,7 @@ pipeline {
             }
         }
 
-        stage('Clone Repo') {
+        stage('Checkout Code') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/nehanayak07/todo-cicd.git'
@@ -43,10 +47,11 @@ pipeline {
 
     post {
         success {
-            echo "✅ Deployment successful"
+            echo "✅ Auto CI/CD Deployment successful"
         }
         failure {
-            echo "❌ Deployment failed"
+            echo "❌ Auto CI/CD Deployment failed"
         }
     }
 }
+
